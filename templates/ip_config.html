@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}规则管理{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/table.css') }}">
+    <script src="static/js/layer.js"></script>
+{% endblock %}
+{% block page_content %}
+    <div class="page-header">
+        <form id="ipconfig_filter" method="POST">
+
+            {{ config_ip.ip.label }} {{ config_ip.ip(id='ip') }}
+            {{ config_ip.valid_time.label }} {{ config_ip.valid_time(id='config_valid_time') }}
+            {{ config_ip.action.label }}{{ config_ip.action(id='action') }}
+
+            <br>
+
+            <br>
+            {{ config_ip.value.label }}{{ config_ip.value(id='value') }}
+            <br>
+            {{ config_ip.csrf_token }}
+            {#                {{ config_ip.submit(id='submit') }}#}
+            <button type="button" id="ipconfig_btn" style=" margin: 15px 0 0 15px;">提交</button>
+        </form>
+    </div>
+
+    <div class="page-body">
+
+
+        <div id="show_config"></div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#ipconfig_btn').click(function () {
+                    //ajax提交
+                    ipconfig_data = $('#ipconfig_filter').serialize();
+                    $.ajax({
+                        url: "{{url_for('ip.choose')}}",
+                        type: 'GET',
+                        dataType: 'json',
+                        data: ipconfig_data,
+                        success: function (data) {
+                            alert(JSON.stringify(data));
+{#                            $("#show_config").empty();#}
+{#                            var table = $("<table border='1' cellspacing='0' > </table>");#}
+{#                            table.appendTo($("#show_config"));#}
+{#                            var trh = $("<tr></tr>");#}
+{#                            trh.appendTo(table);#}
+{#                            for (var key in data[1]) {#}
+{##}
+{#                                var th = $("<th>" + key + "</th>");#}
+{#                                th.appendTo(trh);#}
+{#                            }#}
+{#                            for (var r = 1; r < Object.keys(data).length; r++) {#}
+{#                                var tr = $("<tr></tr>");#}
+{#                                tr.appendTo(table);#}
+{#                                for (var key in data[r]) {#}
+{#                                    var s = data[r][key];#}
+{#                                    var td = $("<td>" + s + "</td>");#}
+{#                                    td.appendTo(tr)#}
+{#                                }#}
+{#                            }#}
+
+                        }
+                    });
+
+                })
+            })
+        </script>
+    </div>
+
+
+{% endblock %}

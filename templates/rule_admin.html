@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}规则管理{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/table.css') }}">
+    <script src="static/js/layer.js"></script>
+{% endblock %}
+{% block page_content %}
+    <style>
+        #value {
+            width: 400px;
+            height: 200px;
+            vertical-align: top;
+            margin: 15px 0 0 15px;
+        }
+
+        #config_btn {
+            margin: 15px 0 0 15px;
+        }
+
+        #config_mod {
+            height: 22px;
+            width: 174px;
+            margin-left: 2px;
+        }
+
+        #action {
+            height: 22px;
+            width: 174px;
+            margin-left: 2px;
+        }
+
+    </style>
+
+    <div class="page-header">
+        <form id="config_filter" method="POST">
+            {{ config_form.mod.label }} {{ config_form.mod(id='config_mod') }}*
+            {{ config_form.id.label }} {{ config_form.id(id='id') }}
+            {{ config_form.action.label }}{{ config_form.action(id='action') }}*
+
+            <br>
+
+            {{ config_form.value_type(id="value_type" ) }}
+            <div id="search_choice" style="display: none">
+                {{ config_form.waf_action.label }}{{ config_form.waf_action(id='waf_action') }}
+                {{ config_form.waf_state.label }}{{ config_form.waf_state(id='waf_state') }}
+
+            </div>
+            {{ config_form.value.label }}{{ config_form.value(id='value') }}
+            <br>
+            {{ config_form.csrf_token }}
+            {#                {{ config_form.submit(id='submit') }}#}
+            <button type="button" id="config_btn">提交</button>
+        </form>
+    </div>
+
+    <div class="page-body">
+
+
+        <div id="show_config"></div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#action').click(function () {
+                    var do_action = $('#action').val()
+                    if (do_action == "search") {
+                        $("#search_choice").css("display", "block")
+                    }
+                    else {
+                        $("#search_choice").css("display", "none")
+                        $("#waf_action").val("")
+                        $("#waf_state").val("")
+                    }
+
+                });
+
+
+                $('#config_btn').click(function () {
+                    //ajax提交
+                    config_data = $('#config_filter').serialize();
+                    $.ajax({
+                        url: "{{url_for('ctl.choose')}}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: config_data,
+                        success: function (data) {
+                            alert(JSON.stringify(data));
+                            $("#show_config").empty();
+                            var table = $("<table border='1' cellspacing='0' > </table>");
+                            table.appendTo($("#show_config"));
+                            var trh = $("<tr></tr>");
+                            trh.appendTo(table);
+                            var th = $("<th>" + "Rule_No" + "</th>");
+                            th.appendTo(trh);
+                            for (var key in data[1]) {
+
+                                var th = $("<th>" + key + "</th>");
+                                th.appendTo(trh);
+                            }
+                            for (var r = 1; r < Object.keys(data).length; r++) {
+                                var tr = $("<tr></tr>");
+                                tr.appendTo(table);
+                                var td = $("<td>" + r + "</td>");
+                                td.appendTo(tr);
+                                for (var key in data[r]) {
+
+                                    var s = data[r][key];
+                                    var td = $("<td>" + s + "</td>");
+                                    td.appendTo(tr)
+                                }
+                            }
+                            $("#show_config").find("tr:even").css("background-color", "#bbbbff");
+                        }
+                    });
+
+                })
+            })
+        </script>
+    </div>
+
+
+{% endblock %}

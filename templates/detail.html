@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ datepicker.loader() }} {# to load jQuery-ui #}
+    {{ datepicker.picker(id=".dp") }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/table.css') }}">
+    <script src="static/js/layer.js"></script>
+{% endblock %}
+{% block page_content %}
+    <style>
+        #filter label{
+            margin-left: 15px;
+            margin-top: 15px;
+        }
+
+        .select_method{
+            height: 22px;
+            width: 174px;
+            margin-left: 2px;
+        }
+
+        .mod_type{
+            height: 22px;
+            width: 174px;
+            margin-left: 2px;
+        }
+
+        #btn{
+            margin: 15px 0 0 15px;
+        }
+
+    </style>
+
+    <div class="page-header">
+        <div class="select_long p-4 d-none d-md-block" style="">
+            <form id="filter" method="POST" class="filter">
+                {{ time_s.start_time.label }} {{ time_s.start_time(id='start_time',class="dp") }}
+                {{ time_s.end_time.label }} {{ time_s.end_time(id='end_time', class="dp") }}
+                <br>
+                {{ time_s.mod_type.label }}{{ time_s.mod_type(id='mod_type', class='mod_type') }}
+                {{ time_s.select_method.label }}{{ time_s.select_method(id='select_methond', class='select_method') }}
+
+                <br>
+                {#                {{ time_s.submit(id='submit') }}#}
+                <button type="button" id="btn">提交</button>
+                {{ time_s.csrf_token }}
+            </form>
+
+            {#            <div class="more_choose">#}
+            {#                <div class="d-flex mb-3" id="job_edu">#}
+            {#                    <label class="m-0">监控类型：</label>#}
+            {#                    <div class="select_box clearfix">#}
+            {#                        <span data-value="99" class="active label03 ml-4 mb-2"><a#}
+            {#                                href="#m">不限</a></span>#}
+            {#                        <span data-value="0" class=" label03 ml-4 mb-2" style="margin: 21px"><a#}
+            {#                                href="#">ARG_MOD</a></span>#}
+            {#                        <span data-value="1" class=" label03 ml-4 mb-2"><a href="#">POST_MOD</a></span>#}
+            {#                        <span data-value="2" class=" label03 ml-4 mb-2"><a href="#">NETWORK_MOD</a></span>#}
+            {#                        <span data-value="3" class=" label03 ml-4 mb-2"><a href="#">Cookie_MOD</a></span>#}
+            {#                        <span data-value="4" class=" label03 ml-4 mb-2"><a href="#">URL_MOD</a></span>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {##}
+            {#            </div>#}
+        </div>
+
+    </div>
+
+    <div id="createtable" class="mytable"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btn').click(function () {
+                //ajax提交
+                asd_data = $('#filter').serialize();
+                $.ajax({
+                    url: "{{url_for('log_view.ajax')}}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: asd_data,
+                    success: function (data) {
+                        //alert(JSON.stringify(data));
+                        if (Object.keys(data).length > 0) {
+                            $("#createtable").empty();
+                            var table = $("<table border='1' cellspacing='0' > </table>");
+                            table.appendTo($("#createtable"));
+
+                            var trh = $("<tr></tr>");
+                            trh.appendTo(table);
+                            var my_column = ['arg', 'cookie', 'headers', 'Host', 'ip', 'method',
+                                'id', 'post_data', 'referer', 'remoteip', 'url', 'status',
+                                'time', 'waf_log'
+                            ]
+                            for (var i in my_column) {
+                                var th = $("<th>" + my_column[i] + "</th>");
+                                th.appendTo(trh);
+                            }
+
+                            for (var r = 0; r < Object.keys(data).length; r++) {
+                                var tr = $("<tr></tr>");
+                                tr.appendTo(table);
+
+                                for (var key in data[r]) {
+                                    var s = data[r][key];
+                                    if (s && s.length > 100) {
+                                        s = s.substr(0, 95) + "...";
+                                    }
+                                    var td = $("<td>" + s + "</td>");
+                                    td.appendTo(tr).on("mouseover", function () {
+                                        if (this.offsetWidth < this.scrollWidth) {
+                                            var that = this;
+                                            var text = $(this).text();
+                                            layer.tips(text, that, {
+                                                tips: 1,
+                                                time: 2000
+                                            });
+                                        }
+                                    });
+                                }
+
+                            }
+                             $("#createtable").find("tr:even").css("background-color", "#bbbbff");
+                        }
+                    }
+                });
+
+
+            });
+        });
+
+
+
+    </script>
+
+
+
+
+    {#    <div class="box box-primary">#}
+    {#        <div class="box-body">#}
+    {#            <div class="row">#}
+    {#                <div class="col-lg-3 col-xs-6">#}
+    {#                    <div class="small-box bg-aqua" style="background-color: aqua">#}
+    {#                        <div class="inner">#}
+    {#                            <h3 id="count01">0</h3>#}
+    {#                            <p>1告警统计</p>#}
+    {#                        </div>#}
+    {#                    <div class="icon">#}
+    {#                        <i class="ion ion-ios-gear-outline"></i>#}
+    {#                    </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-xs-6">#}
+    {#                    <div class="small-box bg-green" style="background-color: green">#}
+    {#                        <div class="inner">#}
+    {#                            <h3 id="count02">0</h3>#}
+    {#                            <p>2告警统计</p>#}
+    {#                        </div>#}
+    {#                        <div class="icon">#}
+    {#                            <i class="ion ion-iphone"></i>#}
+    {#                        </div>#}
+    {##}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-xs-6">#}
+    {#                    <div class="small-box bg-yellow" style="background-color: yellowgreen">#}
+    {#                        <div class="inner">#}
+    {#                            <h3 id="count03">0</h3>#}
+    {#                            <p>统计信息3</p>#}
+    {#                        </div>#}
+    {#                    <div class="icon">#}
+    {#                        <i class="ion ion-person-add"></i>#}
+    {#                    </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#                <div class="col-lg-3 col-xs-6">#}
+    {#                    <div class="small-box bg-red" style="background: red">#}
+    {#                        <div class="inner">#}
+    {#                            <h3 id="count04">0</h3>#}
+    {#                            <p>统计信息4</p>#}
+    {#                        </div>#}
+    {#                        <div class="icon">#}
+    {#                            <i class="ion ion-pie-graph"></i>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="box-footer">#}
+    {#            <div class="alert alert-info alert-dismissible">#}
+    {#                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>#}
+    {#                <h4><i class="icon fa fa-info"></i> 温馨提示</h4>#}
+    {#                <ol>#}
+    {#                    <li>温馨提示温馨提示温馨提示</li>#}
+    {#                    <li>温馨提示温馨提示温馨提示</li>#}
+    {#                </ol>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+
+{% endblock %}

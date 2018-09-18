@@ -1,0 +1,26 @@
+.contain {
+width:900px;
+
+font-family: ‘Microsoft YaHei’; }
+table {
+width:100%;
+text-align: left;
+border:1px solid #e3e6e8;
+border-collapse: collapse;
+table-layout: fixed;
+display: table; }
+th,td {
+border: 1px solid #e3e6e8;
+height:38px;
+line-height: 38px;
+overflow: hidden;
+white-space:nowrap;
+text-overflow:ellipsis;
+}
+
+th {
+background-color: #189AD6;
+color:#fff; }
+.layui-layer {
+word-wrap: break-word;
+word-break: break-all; }

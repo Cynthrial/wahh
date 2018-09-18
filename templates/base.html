@@ -1,0 +1,87 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Waf后台管理系统{% endblock %}
+
+{% block head %}
+    {{ super() }}
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+          type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+          type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/view_log.css') }}">
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="static/js/jquery-ui.min.js"></script>
+{% endblock %}
+{% block navbar %}
+
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Waf后台管理</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/rule_admin">规则管理</a></li>
+                    <li><a href="/detail">日志监控</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">WAF规则<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/ip_config">ip相关配置</a></li>
+                            <li><a href="/rule_admin">规则配置</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <li class="light-blue">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                <span class="user-info">
+                                    <small>欢迎,</small>
+                                    {{ name }}
+                                </span>
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li class="divider"></li>
+                        <li>
+                            <a href="{{ url_for('logout') }}">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% block page_content %}{% endblock %}
+    </div>
+
+{% endblock %}
+
+

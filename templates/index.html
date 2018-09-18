@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}WAF_index{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+</div>
+<form method="POST">
+    {{ form.name.label }} {{ form.name(id='my-text-field') }}
+    {{ form.submit() }}
+    {{ form.csrf_token }}
+</form>
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="row">
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-aqua" style="background-color: aqua" >
+                    <div class="inner">
+                        <h3 id="count01">{{ simple_sum[0][1] }}</h3>
+                        <p>{{ simple_sum[0][0] }}——Mod今日报警</p>
+                    </div>
+{#                    <div class="icon">#}
+{#                        <i class="ion ion-ios-gear-outline"></i>#}
+{#                    </div>#}
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-green" style="background-color: green">
+                    <div class="inner">
+                        <h3 id="count02">{{ simple_sum[1][1] }}</h3>
+                        <p>{{ simple_sum[1][0] }}——Mod今日报警</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-iphone"></i>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-6">
+                <div class="small-box bg-yellow" style="background-color: yellowgreen">
+                    <div class="inner">
+                        <h3 id="count03">{{ simple_sum[2][1] }}</h3>
+                        <p>{{ simple_sum[2][0] }}——Mod今日报警</p>
+                    </div>
+{#                    <div class="icon">#}
+{#                        <i class="ion ion-person-add"></i>#}
+{#                    </div>#}
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-6" >
+                <div class="small-box bg-red" style="background: red">
+                    <div class="inner">
+                        <h3 id="count04">{{ simple_sum[3][1] }}</h3>
+                        <p>{{ simple_sum[3][0] }}——Mod今日报警</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-info"></i> 温馨提示</h4>
+            <ol>
+                <li>测试版本，bug还比功能多？</li>
+                <li></li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
